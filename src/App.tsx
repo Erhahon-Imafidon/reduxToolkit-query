@@ -1,10 +1,11 @@
+import TodoList from './components/TodoList.tsx';
 
 const App = () => {
-  return (
-    <div>
-       App
-    </div>
-  )
-}
+    return (
+        <main className="container font-nunito text-2xl py-10 w-[600px]">
+            <TodoList />
+        </main>
+    );
+};
 
-export default App
+export default App;
