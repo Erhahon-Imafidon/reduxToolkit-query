@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 @import "tailwindcss";
 
 @utility container {
@@ -6,5 +7,5 @@
 }
 
 @theme {
-
+    --font-nunito: 'Nunito', sans-serif;
 }
