@@ -1,10 +1,11 @@
+import TodoList from './components/TodoList.tsx';
 
 const App = () => {
-  return (
-    <div>
-       App
-    </div>
-  )
-}
+    return (
+        <main className="container">
+            <TodoList />
+        </main>
+    );
+};
 
-export default App
+export default App;
