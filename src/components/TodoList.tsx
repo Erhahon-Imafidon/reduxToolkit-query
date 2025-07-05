@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import * as React from 'react';
+import React, { useState } from 'react';
+import { FaUpload } from 'react-icons/fa6';
 
 const TodoList = () => {
     const [newTodo, setTNewTodo] = useState('');
@@ -11,33 +11,32 @@ const TodoList = () => {
     };
 
     const newItemSection = (
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="new-todo">Add a new todo item</label>
-            <div>
+        <form
+            onSubmit={handleSubmit}
+            className="border border-gray-500 p-6 mt-4 flex items-center gap-4 w-full"
+        >
+            <label className="sr-only" htmlFor="new-todo">
+                Add a new todo item
+            </label>
+            <div className="w-full rounded-lg border-gray-500 border px-3 py-2">
                 <input
                     type="text"
                     id="new-todo"
                     value={newTodo}
                     onChange={(e) => setTNewTodo(e.target.value)}
                     placeholder="Enter a new todo item"
+                    className="placeholder:font-nunito w-full outline-none"
                 />
-                <button>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-6"
-                    >
-                        <path d="M11.47 1.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1-1.06 1.06l-1.72-1.72V7.5h-1.5V4.06L9.53 5.78a.75.75 0 0 1-1.06-1.06l3-3ZM11.25 7.5V15a.75.75 0 0 0 1.5 0V7.5h3.75a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-9a3 3 0 0 1 3-3h3.75Z" />
-                    </svg>
-                </button>
             </div>
+            <button className="bg-gray-500 text-white rounded-lg p-2 cursor-pointer">
+                <FaUpload className="text-2xl" />
+            </button>
         </form>
     );
 
     return (
-        <section>
-            <h1>Todo List</h1>
+        <section className="flex flex-col justify-start">
+            <h1 className="font-bold text-3xl">Todo List</h1>
             {newItemSection}
         </section>
     );
