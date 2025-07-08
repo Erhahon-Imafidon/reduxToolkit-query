@@ -16,7 +16,30 @@ export const apiSlice = createApi({
                 body: newTodo,
             }),
         }),
+
+        updateTodo: builder.mutation<
+            ITodos,
+            Partial<Omit<ITodos, 'id'>> & { id: number }
+        >({
+            query: (updatedTodo) => ({
+                url: `/todos/${updatedTodo.id}`,
+                method: 'PATCH',
+                body: updatedTodo,
+            }),
+        }),
+
+        deleteTodo: builder.mutation<void, { id: number }>({
+            query: ({ id }) => ({
+                url: `/todos/${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
-export const { useGetTodosQuery, useAddTodoMutation } = apiSlice;
+export const {
+    useGetTodosQuery,
+    useAddTodoMutation,
+    useUpdateTodoMutation,
+    useDeleteTodoMutation,
+} = apiSlice;
