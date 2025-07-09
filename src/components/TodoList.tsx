@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { FaUpload } from 'react-icons/fa6';
-import { useGetTodosQuery } from '../features/api/apiSlice.ts';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import {
+    useGetTodosQuery,
+    useAddTodoMutation,
+    useUpdateTodoMutation,
+    useDeleteTodoMutation,
+} from '../features/api/apiSlice.ts';
 
 const TodoList = () => {
     const [newTodo, setTNewTodo] = useState('');
@@ -11,10 +17,14 @@ const TodoList = () => {
         isError,
         error,
     } = useGetTodosQuery();
+    const [addTodo] = useAddTodoMutation();
+    const [updateTodo] = useUpdateTodoMutation();
+    const [deleteTodo] = useDeleteTodoMutation();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
+        if (!newTodo.trim()) return;
+        addTodo({ userId: 1, title: newTodo, completed: false });
         setTNewTodo('');
     };
 
@@ -47,7 +57,38 @@ const TodoList = () => {
     if (isLoading) {
         content = <p className="text-gray-500">Loading...</p>;
     } else if (isSuccess) {
-        content = JSON.stringify(todos, null, 2);
+        content = todos.map((todo) => (
+            <article
+                key={todo.id}
+                className="flex items-center justify-between gap-5"
+            >
+                <div className="flex gap-4 items-center">
+                    <input
+                        type="checkbox"
+                        checked={todo.completed}
+                        id={todo.id || ''}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            if (todo.id) {
+                                updateTodo({
+                                    ...todo,
+                                    id: todo.id,
+                                    completed: !todo.completed,
+                                });
+                            }
+                        }}
+                    />
+                    <label className="wrap-anywhere">{todo.title}</label>
+                </div>
+                <button
+                    className="cursor-pointer"
+                    type="button"
+                    onClick={() => todo.id && deleteTodo({ id: todo.id })}
+                >
+                    <RiDeleteBin6Line className={'text-red-500'} />
+                </button>
+            </article>
+        ));
     } else if (isError) {
         content = <p className="text-red-500">{error.toString()}</p>;
     }

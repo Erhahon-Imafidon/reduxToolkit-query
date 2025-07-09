@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export type ITodos = {
     userId: number;
-    id: number | null;
+    id: string | null;
     title: string;
     completed: boolean;
 };
@@ -10,7 +10,7 @@ export type ITodos = {
 const initialState: ITodos[] = [
     {
         userId: 1,
-        id: null,
+        id: '',
         title: '',
         completed: false,
     },

@@ -19,7 +19,7 @@ export const apiSlice = createApi({
 
         updateTodo: builder.mutation<
             ITodos,
-            Partial<Omit<ITodos, 'id'>> & { id: number }
+            Partial<Omit<ITodos, 'id'>> & { id: string }
         >({
             query: (updatedTodo) => ({
                 url: `/todos/${updatedTodo.id}`,
@@ -28,7 +28,7 @@ export const apiSlice = createApi({
             }),
         }),
 
-        deleteTodo: builder.mutation<void, { id: number }>({
+        deleteTodo: builder.mutation<void, { id: string }>({
             query: ({ id }) => ({
                 url: `/todos/${id}`,
                 method: 'DELETE',
