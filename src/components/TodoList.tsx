@@ -36,17 +36,19 @@ const TodoList = () => {
             <label className="sr-only" htmlFor="new-todo">
                 Add a new todo item
             </label>
-            <div className="w-full rounded-lg border-gray-500 border px-3 py-2">
+            <div className="w-full">
                 <input
                     type="text"
                     id="new-todo"
                     value={newTodo}
                     onChange={(e) => setTNewTodo(e.target.value)}
                     placeholder="Enter a new todo item"
-                    className="placeholder:font-nunito w-full outline-none"
+                    className="placeholder:font-nunito w-full outline-none rounded-[10px] border-gray-500 border px-3 py-2 focus:border-2"
                 />
             </div>
-            <button className="bg-gray-500 text-white rounded-lg p-2 cursor-pointer">
+            <button
+                className={`${!newTodo ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-lg p-2 cursor-pointer`}
+            >
                 <FaUpload className="text-2xl" />
             </button>
         </form>
