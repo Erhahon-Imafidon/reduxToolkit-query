@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FaUpload } from 'react-icons/fa6';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import {
@@ -7,6 +7,7 @@ import {
     useUpdateTodoMutation,
     useDeleteTodoMutation,
 } from '../features/api/apiSlice.ts';
+import type { ITodos } from '../features/todos/todosSlice.ts';
 
 const TodoList = () => {
     const [newTodo, setTNewTodo] = useState('');
@@ -21,12 +22,52 @@ const TodoList = () => {
     const [updateTodo] = useUpdateTodoMutation();
     const [deleteTodo] = useDeleteTodoMutation();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newTodo.trim()) return;
-        addTodo({ userId: 1, title: newTodo, completed: false });
-        setTNewTodo('');
+        try {
+            await addTodo({
+                userId: 1,
+                title: newTodo,
+                completed: false,
+            }).unwrap();
+            setTNewTodo('');
+        } catch (err) {
+            console.error('Failed to add todo:', err);
+        }
     };
+
+    const handleCheckboxChange = async (
+        todo: ITodos,
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        e.stopPropagation();
+        if (todo.id) {
+            try {
+                await updateTodo({
+                    ...todo,
+                    id: todo.id,
+                    completed: !todo.completed,
+                }).unwrap();
+            } catch (err) {
+                console.error('Failed to update todo:', err);
+            }
+        }
+    };
+
+    const handleDelete = async (todoId: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            await deleteTodo({ id: todoId }).unwrap();
+        } catch (err) {
+            console.error('Failed to delete todo:', err);
+        }
+    };
+
+    const sortedTodos = useMemo(() => {
+        if (!todos) return [];
+        return [...todos].reverse();
+    }, [todos]);
 
     const newItemSection = (
         <form
@@ -47,6 +88,8 @@ const TodoList = () => {
                 />
             </div>
             <button
+                type={'submit'}
+                disabled={!newTodo.trim()}
                 className={`${!newTodo ? 'bg-gray-500' : 'bg-green-500'} text-white rounded-lg p-2 cursor-pointer`}
             >
                 <FaUpload className="text-2xl" />
@@ -59,7 +102,7 @@ const TodoList = () => {
     if (isLoading) {
         content = <p className="text-gray-500">Loading...</p>;
     } else if (isSuccess) {
-        content = todos.map((todo) => (
+        content = sortedTodos.map((todo) => (
             <article
                 key={todo.id}
                 className="flex items-center justify-between gap-5"
@@ -69,23 +112,14 @@ const TodoList = () => {
                         type="checkbox"
                         checked={todo.completed}
                         id={todo.id || ''}
-                        onChange={(e) => {
-                            e.stopPropagation();
-                            if (todo.id) {
-                                updateTodo({
-                                    ...todo,
-                                    id: todo.id,
-                                    completed: !todo.completed,
-                                });
-                            }
-                        }}
+                        onChange={(e) => handleCheckboxChange(todo, e)}
                     />
                     <label className="wrap-anywhere">{todo.title}</label>
                 </div>
                 <button
                     className="cursor-pointer"
                     type="button"
-                    onClick={() => todo.id && deleteTodo({ id: todo.id })}
+                    onClick={(e) => handleDelete(todo.id || '', e)}
                 >
                     <RiDeleteBin6Line className={'text-red-500'} />
                 </button>
