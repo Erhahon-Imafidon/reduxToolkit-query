@@ -4,9 +4,11 @@ import type { ITodos } from '../todos/todosSlice.ts';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3500' }),
+    tagTypes: ['Todos'],
     endpoints: (builder) => ({
         getTodos: builder.query<ITodos[], void>({
             query: () => '/todos',
+            providesTags: ['Todos'],
         }),
 
         addTodo: builder.mutation<ITodos, Omit<ITodos, 'id'>>({
@@ -15,6 +17,7 @@ export const apiSlice = createApi({
                 method: 'POST',
                 body: newTodo,
             }),
+            invalidatesTags: ['Todos'],
         }),
 
         updateTodo: builder.mutation<
@@ -26,6 +29,7 @@ export const apiSlice = createApi({
                 method: 'PATCH',
                 body: updatedTodo,
             }),
+            invalidatesTags: ['Todos'],
         }),
 
         deleteTodo: builder.mutation<void, { id: string }>({
@@ -33,6 +37,7 @@ export const apiSlice = createApi({
                 url: `/todos/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Todos'],
         }),
     }),
 });
